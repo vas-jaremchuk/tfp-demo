@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Procrea-inspired color palette */
+  --color-primary-lighter: #f8f9fa;
+  --color-primary-light: #e9ecef;
+  --color-primary-medium: #dee2e6;
+  --color-primary-dark: #495057;
+  --color-primary-black: #212529;
+  --color-primary-white: #ffffff;
+  
+  --color-accent-medium: #00528e;
+  --color-accent-light: #3b82f6;
+  --color-accent-dark: #1e40af;
+  
+  --color-blue-600: #2563eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+}
+
+#root {
+  margin: auto;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-lighter);
+}
+
+/* Typography styles inspired by Procrea */
+.tfp-h2-serif {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-primary-black);
+}
+
+.tfp-surtitres {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-accent-medium);
+}
+
+.tfp-text-lg {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--color-gray-700);
+}
+
+.paragraph {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+/* Button styles */
+.tfp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.tfp-button:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tfp-button:active {
+  transform: translateY(0);
+}
+
+/* Accordion specific styles */
+.tfp-accordion {
+  max-width: 1200px;
+}
+
+.tfp-accordion h4 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  color: var(--color-primary-black);
+}
+
+/* Animation utilities */
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top-2 {
+  animation: slide-in-from-top 0.3s ease-out;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+/* Container utility */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
