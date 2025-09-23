@@ -37,6 +37,13 @@ npm run build
 
 # Build Storybook
 npm run build-storybook
+
+# view a static storybook locally
+npx serve storybook-static
+# or
+cd storybook-static && python -m http.server 6007
+# or
+php -S localhost:6007 -t storybook-static
 ```
 
 ## Component Structure
