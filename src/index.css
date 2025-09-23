@@ -37,6 +37,36 @@ body {
 }
 
 /* Typography styles inspired by Procrea */
+.tfp-h1-serif {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.25rem;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--color-primary-black);
+}
+
+@media (min-width: 768px) {
+  .tfp-h1-serif {
+    font-size: 5.25rem;
+    line-height: 1.1;
+  }
+}
+
+.tfp-h1-sans-serif {
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 200;
+  line-height: 1;
+  color: var(--color-primary-black);
+}
+
+@media (min-width: 768px) {
+  .tfp-h1-sans-serif {
+    font-size: 4.875rem;
+    line-height: 1.1;
+  }
+}
+
 .tfp-h2-serif {
   font-family: 'Playfair Display', serif;
   font-weight: 600;
@@ -62,6 +92,89 @@ body {
 .paragraph {
   margin-bottom: 1rem;
   line-height: 1.7;
+}
+
+/* Tailwind utility classes for Storybook */
+.bg-accent-medium {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 82 142 / var(--tw-bg-opacity, 1));
+}
+
+.border-accent-medium {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 82 142 / var(--tw-border-opacity, 1));
+}
+
+.bg-primary-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+
+.border-primary-medium {
+  --tw-border-opacity: 1;
+  border-color: rgb(189 179 154 / var(--tw-border-opacity, 1));
+}
+
+.text-accent-medium {
+  --tw-text-opacity: 1;
+  color: rgb(0 82 142 / var(--tw-text-opacity, 1));
+}
+
+.text-primary-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.border-primary-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(32 37 36 / var(--tw-border-opacity, 1));
+}
+
+.bg-primary-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(32 37 36 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:border-primary-black:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(32 37 36 / var(--tw-border-opacity, 1));
+}
+
+.hover\:bg-primary-black:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(32 37 36 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:border-accent-medium:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 82 142 / var(--tw-border-opacity, 1));
+}
+
+.hover\:bg-accent-medium:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 82 142 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:text-primary-white:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.group-hover\:text-primary-white {
+  color: rgb(0 82 142);
+}
+
+.group:hover .group-hover\:text-primary-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.visited\:text-primary-white:visited {
+  color: rgb(255 255 255);
+}
+
+.visited\:text-primary-black:visited {
+  color: rgb(32 37 36);
 }
 
 /* Button styles */
