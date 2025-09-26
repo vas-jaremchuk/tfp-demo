@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { CarouselWidgetProps } from './types';
 
 export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
@@ -7,7 +7,14 @@ export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCarousel, setIsCarousel] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [currentX, setCurrentX] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
+  
+  const carouselRef = useRef<HTMLDivElement>(null);
   const slidesLength = 3;
+  const slideWidth = 400 + 32; // slide width + gap
 
   useEffect(() => {
     setIsCarousel(data.slides.length > slidesLength);
@@ -29,7 +36,7 @@ export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
   };
 
   const cardClasses = isCarousel 
-    ? "swiper-slide sm:w-[400px] group block border-b border-primary-main relative [&_.apos-area>*]:mb-6 [&_img]:object-cover [&_img]:w-full [&_img]:h-[216px] [&_img]:sm:h-[270px]"
+    ? "flex-shrink-0 w-[400px] mr-8 group block border-b border-primary-main relative [&_.apos-area>*]:mb-6 [&_img]:object-cover [&_img]:w-full [&_img]:h-[216px] [&_img]:sm:h-[270px]"
     : "w-full md:w-4/12 group block border-b border-primary-main relative [&_.apos-area>*]:mb-6 [&_img]:object-cover [&_img]:w-full [&_img]:h-[216px] [&_img]:sm:h-[270px]";
 
   const sectionClasses = isCarousel 
@@ -37,21 +44,112 @@ export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
     : "my-16 md:my-28";
 
   const wrapperClasses = isCarousel
-    ? "swiper-wrapper lg:px-0 px-4 my-12"
+    ? "flex lg:px-0 px-4 my-12 transition-transform duration-300 ease-in-out"
     : "flex flex-col md:flex-row items-baseline container mx-auto gap-8 md:gap-14 px-4 my-12";
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % data.slides.length);
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => Math.min(prev + 1, data.slides.length - 1));
+  }, [data.slides.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => Math.max(prev - 1, 0));
+  }, []);
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentSlide(Math.max(0, Math.min(index, data.slides.length - 1)));
+  }, [data.slides.length]);
+
+  // Touch/Mouse drag handlers
+  const handleStart = (clientX: number) => {
+    setIsDragging(true);
+    setStartX(clientX);
+    setCurrentX(clientX);
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + data.slides.length) % data.slides.length);
+  const handleMove = (clientX: number) => {
+    if (!isDragging) return;
+    
+    setCurrentX(clientX);
+    const diff = clientX - startX;
+    const newTranslateX = -currentSlide * slideWidth + diff;
+    setTranslateX(newTranslateX);
   };
+
+  const handleEnd = () => {
+    if (!isDragging) return;
+    
+    setIsDragging(false);
+    const diff = currentX - startX;
+    const threshold = slideWidth * 0.3;
+    
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0 && currentSlide > 0) {
+        prevSlide();
+      } else if (diff < 0 && currentSlide < data.slides.length - 1) {
+        nextSlide();
+      }
+    }
+    
+    setTranslateX(-currentSlide * slideWidth);
+  };
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    handleMove(e.clientX);
+  };
+
+  const handleMouseUp = () => {
+    handleEnd();
+  };
+
+  const handleMouseLeave = () => {
+    handleEnd();
+  };
+
+  // Touch events
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    handleMove(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    handleEnd();
+  };
+
+  // Update translateX when currentSlide changes
+  useEffect(() => {
+    if (!isDragging) {
+      setTranslateX(-currentSlide * slideWidth);
+    }
+  }, [currentSlide, slideWidth, isDragging]);
 
   return (
     <section className={`${sectionClasses} ${className}`}>
-      <div className={wrapperClasses}>
-        {data.slides.map((item, index) => {
+      <div 
+        ref={carouselRef}
+        className={wrapperClasses}
+        style={isCarousel ? { 
+          transform: `translateX(${translateX}px)`,
+          transition: isDragging ? 'none' : 'transform 0.3s ease-in-out',
+          cursor: isDragging ? 'grabbing' : 'grab'
+        } : {}}
+        onMouseDown={isCarousel ? handleMouseDown : undefined}
+        onMouseMove={isCarousel ? handleMouseMove : undefined}
+        onMouseUp={isCarousel ? handleMouseUp : undefined}
+        onMouseLeave={isCarousel ? handleMouseLeave : undefined}
+        onTouchStart={isCarousel ? handleTouchStart : undefined}
+        onTouchMove={isCarousel ? handleTouchMove : undefined}
+        onTouchEnd={isCarousel ? handleTouchEnd : undefined}
+      >
+        {data.slides.map((item) => {
           const path = getPath(item.link);
           const slideElement = (
             <div key={item.id} className="apos-area">
@@ -66,7 +164,7 @@ export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
                 />
               </figure>
               <div data-rich-text="" className="tfp-rich-text">
-                <h4>{item.slideContent.richText.title}</h4>
+                <h4 className="tfp-h4-serif">{item.slideContent.richText.title}</h4>
                 <p className="paragraph">{item.slideContent.richText.content}</p>
               </div>
             </div>
@@ -101,6 +199,8 @@ export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
           <button
             onClick={prevSlide}
             className="tfp-carousel-button-prev aspect-square w-auto select-none bg-transparent text-primary-dark justify-center text-sm gap-2 size-11 rounded-full flex items-center border border-primary-medium transition-all hover:text-primary-white hover:border-accent-medium hover:bg-accent-medium visited:text-primary-black active:text-primary-black hover:no-underline"
+            aria-label="Previous slide"
+            disabled={currentSlide === 0}
           >
             <span className="icon-arrow-left text-3xl leading-none">←</span>
           </button>
@@ -111,16 +211,19 @@ export const CarouselWidget: React.FC<CarouselWidgetProps> = ({
             {data.slides.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentSlide(index)}
+                onClick={() => goToSlide(index)}
                 className={`w-2 h-2 rounded-full mx-1 ${
                   index === currentSlide ? 'bg-accent-medium' : 'bg-primary-medium'
                 }`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
           <button
             onClick={nextSlide}
             className="tfp-carousel-button-next aspect-square w-auto select-none bg-transparent text-primary-dark justify-center text-sm gap-2 size-11 rounded-full flex items-center border border-primary-medium transition-all hover:text-primary-white hover:border-accent-medium hover:bg-accent-medium visited:text-primary-black active:text-primary-black hover:no-underline"
+            aria-label="Next slide"
+            disabled={currentSlide === data.slides.length - 1}
           >
             <span className="icon-arrow-right text-3xl leading-none">→</span>
           </button>
