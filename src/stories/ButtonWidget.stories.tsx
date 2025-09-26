@@ -3,7 +3,7 @@ import { ButtonWidget } from '../components/ButtonWidget';
 import { mockButtonData } from '../data/mockButtonData';
 
 const meta: Meta<typeof ButtonWidget> = {
-  title: 'Components/ButtonWidget',
+  title: 'Atoms/ButtonWidget',
   component: ButtonWidget,
   parameters: {
     layout: 'centered',

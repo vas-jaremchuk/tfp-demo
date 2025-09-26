@@ -3,7 +3,7 @@ import { QuickLinksWidget } from '../components/QuickLinksWidget';
 import { mockQuickLinksData } from '../data/mockQuickLinksData';
 
 const meta: Meta<typeof QuickLinksWidget> = {
-  title: 'Components/QuickLinksWidget',
+  title: 'Atoms/QuickLinksWidget',
   component: QuickLinksWidget,
   parameters: {
     layout: 'centered',

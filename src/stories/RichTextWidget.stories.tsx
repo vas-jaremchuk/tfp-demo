@@ -3,7 +3,7 @@ import { RichTextWidget } from '../components/RichTextWidget';
 import { mockRichTextData } from '../data/mockRichTextData';
 
 const meta: Meta<typeof RichTextWidget> = {
-  title: 'Components/RichTextWidget',
+  title: 'Atoms/RichTextWidget',
   component: RichTextWidget,
   parameters: {
     layout: 'centered',

@@ -3,7 +3,7 @@ import { HeroBannerWidget } from '../components/HeroBannerWidget';
 import { mockHeroBannerData, simpleHeroBannerData } from '../data/mockHeroBannerData';
 
 const meta: Meta<typeof HeroBannerWidget> = {
-  title: 'Components/HeroBannerWidget',
+  title: 'Atoms/HeroBannerWidget',
   component: HeroBannerWidget,
   parameters: {
     layout: 'fullscreen',

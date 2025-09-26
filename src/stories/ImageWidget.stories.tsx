@@ -3,7 +3,7 @@ import { ImageWidget } from '../components/ImageWidget';
 import { mockImageData } from '../data/mockImageData';
 
 const meta: Meta<typeof ImageWidget> = {
-  title: 'Components/ImageWidget',
+  title: 'Atoms/ImageWidget',
   component: ImageWidget,
   parameters: {
     layout: 'centered',
