@@ -34,3 +34,18 @@ export const Default: Story = {
     data: mockQuickLinksData,
   },
 };
+
+// Single link case
+export const SingleLink: Story = {
+  args: {
+    data: {
+      links: [
+        {
+          label: "Get Started",
+          href: "/get-started",
+          ariaLabel: "Get Started with our platform",
+        },
+      ],
+    },
+  },
+};

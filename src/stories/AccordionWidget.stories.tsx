@@ -4,7 +4,7 @@ import { mockAccordionData } from '../data/mockAccordionData';
 import { AccordionData } from '../components/AccordionWidget/types';
 
 const meta: Meta<typeof AccordionWidget> = {
-  title: 'Atoms/AccordionWidget',
+  title: 'Molecules/AccordionWidget',
   component: AccordionWidget,
   parameters: {
     layout: 'fullscreen',

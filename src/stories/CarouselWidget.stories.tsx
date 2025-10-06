@@ -39,6 +39,7 @@ export const Default: Story = {
 export const WithNavigation: Story = {
   args: {
     data: mockCarouselDataWithNavigation,
+    className: 'px-4 md:px-14',
   },
 };
 
@@ -71,9 +72,9 @@ export const WithoutLinks: Story = {
 };
 
 // Custom styled carousel
-export const CustomStyled: Story = {
-  args: {
-    data: mockCarouselData,
-    className: 'bg-gray-50 rounded-lg p-4',
-  },
-};
+// export const CustomStyled: Story = {
+//   args: {
+//     data: mockCarouselData,
+//     className: 'bg-gray-50 rounded-lg p-4',
+//   },
+// };

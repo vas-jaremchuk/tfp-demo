@@ -3,6 +3,11 @@ import '../src/index.css';
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: ['Atoms', 'Molecules', '*'],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
