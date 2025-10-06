@@ -158,35 +158,107 @@ export const TeamWidget: React.FC<TeamWidgetProps> = ({
         )}
         
         <div className="team-widget__team px-4 md:px-14">
-          <div 
-            className="tfp-team-members tfp-carousel overflow-hidden"
-            ref={carouselRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-          >
+          <div className="tfp-team-members tfp-carousel overflow-x-clip swiper-container swiper-initialized swiper-horizontal">
+            
+            {/* Navigation */}
+            <div className="tfp-carousel-navigation justify-center flex flex-row container w-fit gap-5 mx-auto items-center">
+              <div 
+                className={`tfp-carousel-button-prev aspect-square w-auto select-none bg-transparent text-primary-dark justify-center text-sm gap-2 size-11 rounded-full flex items-center border border-primary-medium transition-all hover:text-primary-white hover:border-accent-medium hover:bg-accent-medium visited:text-primary-black active:text-primary-black hover:no-underline${currentSlide === 0 ? ' swiper-button-disabled' : ''}`}
+                tabIndex={currentSlide === 0 ? -1 : 0}
+                role="button" 
+                aria-label="Previous slide"
+                aria-controls="swiper-wrapper-5d3c1f93e17f1fa3"
+                aria-disabled={currentSlide === 0}
+                onClick={prevSlide}
+              >
+                <span className="icon-arrow-left text-3xl leading-none"></span>
+              </div>
+              <div className="tfp-carousel-fraction text-primary-black whitespace-nowrap text-2xs">
+                {currentSlide + 1} / {data.members.length}
+              </div>
+              <div className="tfp-carousel-pagination w-auto swiper-pagination-bullets swiper-pagination-horizontal">
+                {data.members.map((_, index) => (
+                  <span
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`swiper-pagination-bullet${index === currentSlide ? ' swiper-pagination-bullet-active' : ''}`}
+                    aria-current={index === currentSlide ? "true" : undefined}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+              <div 
+                className={`tfp-carousel-button-next aspect-square w-auto select-none bg-transparent text-primary-dark justify-center text-sm gap-2 size-11 rounded-full flex items-center border border-primary-medium transition-all hover:text-primary-white hover:border-accent-medium hover:bg-accent-medium visited:text-primary-black active:text-primary-black hover:no-underline${currentSlide === data.members.length - 1 ? ' swiper-button-disabled' : ''}`}
+                tabIndex={currentSlide === data.members.length - 1 ? -1 : 0}
+                role="button" 
+                aria-label="Next slide"
+                aria-controls="swiper-wrapper-5d3c1f93e17f1fa3"
+                aria-disabled={currentSlide === data.members.length - 1}
+                onClick={nextSlide}
+              >
+                <span className="icon-arrow-right text-3xl leading-none"></span>
+              </div>
+            </div>
+            
             {/* Team Members Carousel */}
             <div 
-              className={`flex ${isDragging ? '' : 'transition-transform duration-300 ease-in-out'}`}
+              className={`swiper-wrapper px-0 mt-12 flex ${isDragging ? '' : 'transition-transform duration-300 ease-in-out'}`}
+              id="swiper-wrapper-5d3c1f93e17f1fa3"
+              aria-live="polite"
+              ref={carouselRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
               style={{ 
-                transform: `translateX(${translateX}px)`,
+                transform: `translate3d(${translateX}px, 0px, 0px)`,
+                transitionDuration: isDragging ? '0ms' : '300ms',
+                transitionDelay: '0ms',
+                cursor: isDragging ? 'grabbing' : 'grab',
                 width: `${data.members.length * (400 + 56)}px`
               }}
             >
-              {data.members.map((member, index) => (
-                <div
-                  key={member.id}
-                  className={`flex-shrink-0 w-[400px] h-auto group block relative min-h-[484px] sm:min-h-[600px] border border-primary-light bg-primary-white pt-12 px-8 ${
-                    member.image ? 'flex flex-col justify-between' : ''
-                  }`}
-                  onClick={() => setActiveModal(member.id)}
-                  style={{ marginRight: index < data.members.length - 1 ? '56px' : '0', cursor: 'pointer' }}
-                >
+              {data.members.map((member, index) => {
+                const slideClasses = [
+                  'swiper-slide',
+                  'flex-shrink-0',
+                  'w-[400px]',
+                  'h-auto',
+                  'group',
+                  'block',
+                  'relative',
+                  'min-h-[484px]',
+                  'sm:min-h-[600px]',
+                  'border',
+                  'border-primary-light',
+                  'bg-primary-white',
+                  'pt-12',
+                  'px-8'
+                ];
+
+                if (member.image) {
+                  slideClasses.push('flex', 'flex-col', 'justify-between');
+                }
+
+                // Add Swiper state classes
+                if (index === currentSlide - 1) slideClasses.push('swiper-slide-prev');
+                if (index === currentSlide) slideClasses.push('swiper-slide-active');
+                if (index === currentSlide + 1) slideClasses.push('swiper-slide-next');
+
+                return (
+                  <div
+                    key={member.id}
+                    className={slideClasses.join(' ')}
+                    onClick={() => setActiveModal(member.id)}
+                    role="group"
+                    aria-label={`${index + 1} / ${data.members.length}`}
+                    style={{ marginRight: index < data.members.length - 1 ? '56px' : '0', cursor: 'pointer' }}
+                  >
                   <div>
                     <p className="tfp-h5-serif mb-2">{member.name}</p>
                     {member.credentials && (
@@ -210,104 +282,67 @@ export const TeamWidget: React.FC<TeamWidgetProps> = ({
                     member.hasDecorativeSvg && <DecorativeSvg />
                   )}
                 </div>
-              ))}
-            </div>
-
-            {/* Navigation */}
-            <div className="tfp-carousel-navigation justify-center flex flex-row container w-fit gap-5 mx-auto items-center mt-12">
-              <button
-                onClick={prevSlide}
-                className="tfp-carousel-button-prev aspect-square w-auto select-none bg-transparent text-primary-dark justify-center text-sm gap-2 size-11 rounded-full flex items-center border border-primary-medium transition-all hover:text-primary-white hover:border-accent-medium hover:bg-accent-medium visited:text-primary-black active:text-primary-black hover:no-underline"
-                aria-label="Previous slide"
-                disabled={currentSlide === 0}
-              >
-                <span className="icon-arrow-left text-3xl leading-none">←</span>
-              </button>
-              
-              <div className="tfp-carousel-fraction text-primary-black whitespace-nowrap text-2xs">
-                {currentSlide + 1} / {data.members.length}
-              </div>
-              
-              <div className="tfp-carousel-pagination w-auto">
-                {data.members.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-2 h-2 rounded-full mx-1 transition-colors ${
-                      index === currentSlide ? 'bg-accent-medium' : 'bg-primary-medium'
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-              
-              <button
-                onClick={nextSlide}
-                className="tfp-carousel-button-next aspect-square w-auto select-none bg-transparent text-primary-dark justify-center text-sm gap-2 size-11 rounded-full flex items-center border border-primary-medium transition-all hover:text-primary-white hover:border-accent-medium hover:bg-accent-medium visited:text-primary-black active:text-primary-black hover:no-underline"
-                aria-label="Next slide"
-                disabled={currentSlide === data.members.length - 1}
-              >
-                <span className="icon-arrow-right text-3xl leading-none">→</span>
-              </button>
-            </div>
-
-            {/* Modals */}
-            <div className="tfp-team-members__modals">
-              {data.members.map((member) => (
-                <div
-                  key={`modal-${member.id}`}
-                  className={`fixed inset-0 flex items-center justify-center z-50 ${
-                    activeModal === member.id ? 'block' : 'hidden'
-                  }`}
-                  style={{ display: activeModal === member.id ? 'flex' : 'none' }}
-                >
-                  <div className="fixed inset-0 bg-gray-800 opacity-75" onClick={closeModal}></div>
-                  
-                  <div
-                    className="bg-primary-light overflow-hidden transform transition-all sm:max-w-3xl sm:w-full py-14 px-4 md:px-10 z-10 max-h-full sm:max-h-[90vh] overflow-y-auto [&_.apos-area]:flex [&_.apos-area]:flex-col [&_.apos-area]:gap-6 [&_.tfp-buttons>div]:max-w-full [&_.tfp-buttons>div]:w-full"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <header className="w-full flex justify-end">
-                      <button
-                        onClick={closeModal}
-                        aria-label="Close modal"
-                        className="text-primary-black justify-center gap-2 w-11 h-11 rounded-full flex items-center transition-all hover:border-accent-medium"
-                      >
-                        <span className="icon-cross text-3xl leading-none block">×</span>
-                      </button>
-                    </header>
-                    
-                    <div>
-                      {member.image && (
-                        <img
-                          srcSet={member.image.srcset}
-                          src={member.image.src}
-                          alt={member.image.alt}
-                          width="1200"
-                          height="1500"
-                          className="object-cover w-32 h-32 mb-4 object-top"
-                        />
-                      )}
-                      
-                      <p className="tfp-h5-serif mb-2">{member.name}</p>
-                      {member.credentials && (
-                        <p className="tfp-surtitres mb-4">{member.credentials}</p>
-                      )}
-                      <p className="mb-4">{member.title}</p>
-                    </div>
-                    
-                    {member.bio && (
-                      <div className="apos-area">
-                        <div data-rich-text="" className="tfp-rich-text">
-                          <p className="paragraph">{member.bio}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
+        </div>
+
+        {/* Modals */}
+        <div className="tfp-team-members__modals">
+          {data.members.map((member) => (
+            <div
+              key={`modal-${member.id}`}
+              className={`fixed inset-0 flex items-center justify-center z-50 ${
+                activeModal === member.id ? 'block' : 'hidden'
+              }`}
+              style={{ display: activeModal === member.id ? 'flex' : 'none' }}
+            >
+              <div className="fixed inset-0 bg-gray-800 opacity-75" onClick={closeModal}></div>
+              
+              <div
+                className="bg-primary-light overflow-hidden transform transition-all sm:max-w-3xl sm:w-full py-14 px-4 md:px-10 z-10 max-h-full sm:max-h-[90vh] overflow-y-auto [&_.apos-area]:flex [&_.apos-area]:flex-col [&_.apos-area]:gap-6 [&_.tfp-buttons>div]:max-w-full [&_.tfp-buttons>div]:w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <header className="w-full flex justify-end">
+                  <button
+                    onClick={closeModal}
+                    aria-label="Close modal"
+                    className="text-primary-black justify-center gap-2 w-11 h-11 rounded-full flex items-center transition-all hover:border-accent-medium"
+                  >
+                    <span className="icon-cross text-3xl leading-none block">×</span>
+                  </button>
+                </header>
+                
+                <div>
+                  {member.image && (
+                    <img
+                      srcSet={member.image.srcset}
+                      src={member.image.src}
+                      alt={member.image.alt}
+                      width="1200"
+                      height="1500"
+                      className="object-cover w-32 h-32 mb-4 object-top"
+                    />
+                  )}
+                  
+                  <p className="tfp-h5-serif mb-2">{member.name}</p>
+                  {member.credentials && (
+                    <p className="tfp-surtitres mb-4">{member.credentials}</p>
+                  )}
+                  <p className="mb-4">{member.title}</p>
+                </div>
+                
+                {member.bio && (
+                  <div className="apos-area">
+                    <div data-rich-text="" className="tfp-rich-text">
+                      <p className="paragraph">{member.bio}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
